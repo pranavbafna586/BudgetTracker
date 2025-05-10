@@ -1245,16 +1245,19 @@ export namespace Prisma {
 
   export type UserSettingsMinAggregateOutputType = {
     id: string | null
+    userId: string | null
     currency: string | null
   }
 
   export type UserSettingsMaxAggregateOutputType = {
     id: string | null
+    userId: string | null
     currency: string | null
   }
 
   export type UserSettingsCountAggregateOutputType = {
     id: number
+    userId: number
     currency: number
     _all: number
   }
@@ -1262,16 +1265,19 @@ export namespace Prisma {
 
   export type UserSettingsMinAggregateInputType = {
     id?: true
+    userId?: true
     currency?: true
   }
 
   export type UserSettingsMaxAggregateInputType = {
     id?: true
+    userId?: true
     currency?: true
   }
 
   export type UserSettingsCountAggregateInputType = {
     id?: true
+    userId?: true
     currency?: true
     _all?: true
   }
@@ -1350,6 +1356,7 @@ export namespace Prisma {
 
   export type UserSettingsGroupByOutputType = {
     id: string
+    userId: string
     currency: string
     _count: UserSettingsCountAggregateOutputType | null
     _min: UserSettingsMinAggregateOutputType | null
@@ -1372,31 +1379,36 @@ export namespace Prisma {
 
   export type UserSettingsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     currency?: boolean
   }, ExtArgs["result"]["userSettings"]>
 
   export type UserSettingsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     currency?: boolean
   }, ExtArgs["result"]["userSettings"]>
 
   export type UserSettingsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     currency?: boolean
   }, ExtArgs["result"]["userSettings"]>
 
   export type UserSettingsSelectScalar = {
     id?: boolean
+    userId?: boolean
     currency?: boolean
   }
 
-  export type UserSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "currency", ExtArgs["result"]["userSettings"]>
+  export type UserSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "currency", ExtArgs["result"]["userSettings"]>
 
   export type $UserSettingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "UserSettings"
     objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      userId: string
       currency: string
     }, ExtArgs["result"]["userSettings"]>
     composites: {}
@@ -1822,6 +1834,7 @@ export namespace Prisma {
    */
   interface UserSettingsFieldRefs {
     readonly id: FieldRef<"UserSettings", 'String'>
+    readonly userId: FieldRef<"UserSettings", 'String'>
     readonly currency: FieldRef<"UserSettings", 'String'>
   }
     
@@ -6380,6 +6393,7 @@ export namespace Prisma {
 
   export const UserSettingsScalarFieldEnum: {
     id: 'id',
+    userId: 'userId',
     currency: 'currency'
   };
 
@@ -6485,24 +6499,28 @@ export namespace Prisma {
     OR?: UserSettingsWhereInput[]
     NOT?: UserSettingsWhereInput | UserSettingsWhereInput[]
     id?: StringFilter<"UserSettings"> | string
+    userId?: StringFilter<"UserSettings"> | string
     currency?: StringFilter<"UserSettings"> | string
   }
 
   export type UserSettingsOrderByWithRelationInput = {
     id?: SortOrder
+    userId?: SortOrder
     currency?: SortOrder
   }
 
   export type UserSettingsWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    userId?: string
     AND?: UserSettingsWhereInput | UserSettingsWhereInput[]
     OR?: UserSettingsWhereInput[]
     NOT?: UserSettingsWhereInput | UserSettingsWhereInput[]
     currency?: StringFilter<"UserSettings"> | string
-  }, "id">
+  }, "id" | "userId">
 
   export type UserSettingsOrderByWithAggregationInput = {
     id?: SortOrder
+    userId?: SortOrder
     currency?: SortOrder
     _count?: UserSettingsCountOrderByAggregateInput
     _max?: UserSettingsMaxOrderByAggregateInput
@@ -6514,6 +6532,7 @@ export namespace Prisma {
     OR?: UserSettingsScalarWhereWithAggregatesInput[]
     NOT?: UserSettingsScalarWhereWithAggregatesInput | UserSettingsScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"UserSettings"> | string
+    userId?: StringWithAggregatesFilter<"UserSettings"> | string
     currency?: StringWithAggregatesFilter<"UserSettings"> | string
   }
 
@@ -6765,37 +6784,44 @@ export namespace Prisma {
   }
 
   export type UserSettingsCreateInput = {
-    id: string
-    currency: string
+    id?: string
+    userId: string
+    currency?: string
   }
 
   export type UserSettingsUncheckedCreateInput = {
-    id: string
-    currency: string
+    id?: string
+    userId: string
+    currency?: string
   }
 
   export type UserSettingsUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserSettingsUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserSettingsCreateManyInput = {
-    id: string
-    currency: string
+    id?: string
+    userId: string
+    currency?: string
   }
 
   export type UserSettingsUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserSettingsUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     currency?: StringFieldUpdateOperationsInput | string
   }
 
@@ -7081,16 +7107,19 @@ export namespace Prisma {
 
   export type UserSettingsCountOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     currency?: SortOrder
   }
 
   export type UserSettingsMaxOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     currency?: SortOrder
   }
 
   export type UserSettingsMinOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     currency?: SortOrder
   }
 

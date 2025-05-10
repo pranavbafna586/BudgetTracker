@@ -15,8 +15,9 @@ datasource db {
 }
 
 model UserSettings {
-  id       String @id
-  currency String
+  id       String @id @default(uuid())
+  userId   String @unique
+  currency String @default("USD")
 }
 
 model Category {
