@@ -6,7 +6,7 @@ import {
 } from "@/schema/categories";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleOff, Loader2, PlusSquare } from "lucide-react";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, use } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,11 +42,13 @@ import {
 } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Category } from "@/lib/generated/prisma/client";
+import { useTheme } from "next-themes";
 interface Props {
   type: TransactionType;
+  successCallback?: (category: Category) => void;
 }
 
-function CreateCategoryDialog({ type }: Props) {
+function CreateCategoryDialog({ type, successCallback }: Props) {
   const [open, setOpen] = useState(false);
   const form = useForm<CreateCategorySchemaType>({
     resolver: zodResolver(CreateCategorySchema),
@@ -55,6 +57,7 @@ function CreateCategoryDialog({ type }: Props) {
     },
   });
   const queryClient = useQueryClient();
+  const theme = useTheme();
   const { mutate, isPending } = useMutation({
     mutationFn: createCategory,
     onSuccess: async (data: Category) => {
@@ -69,6 +72,12 @@ function CreateCategoryDialog({ type }: Props) {
       await queryClient.invalidateQueries({
         queryKey: ["categories"],
       });
+
+      // Call successCallback if provided
+      if (successCallback) {
+        successCallback(data);
+      }
+
       setOpen(false);
     },
     onError: (error: any) => {
@@ -175,6 +184,7 @@ function CreateCategoryDialog({ type }: Props) {
                       <PopoverContent className="w-full">
                         <Picker
                           data={data}
+                          theme={theme.resolvedTheme}
                           onEmojiSelect={(emoji: { native: string }) => {
                             field.onChange(emoji.native);
                           }}
