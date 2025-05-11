@@ -36,14 +36,20 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, Loader2 } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { Transaction } from "@/lib/generated/prisma/client";
 
 interface Props {
   trigger: ReactNode;
   type: TransactionType;
 }
+
 function CreateTransactionDialog({ trigger, type }: Props) {
   const [open, setOpen] = React.useState(false);
+  const queryClient = useQueryClient();
+
   const form = useForm<CreateTransactionSchemaType>({
     resolver: zodResolver(CreateTransactionSchema),
     defaultValues: {
@@ -52,22 +58,40 @@ function CreateTransactionDialog({ trigger, type }: Props) {
       category: "",
     },
   });
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: createTransaction,
+    onSuccess: async (data: Transaction) => {
+      form.reset({
+        type,
+        date: new Date(),
+        category: "",
+        description: "",
+        amount: undefined,
+      });
+      toast.success(`Transaction created successfully 🎉`, {
+        id: "create-transaction",
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["transactions"],
+      });
+
+      setOpen(false);
+    },
+    onError: (error: any) => {
+      const errorMessage = error.message || "Something went wrong";
+      toast.error(errorMessage, {
+        id: "create-transaction",
+      });
+      console.error("Transaction creation error:", error);
+    },
+  });
+
   const onSubmit = (values: CreateTransactionSchemaType) => {
-    console.log("Transaction values:", values);
-    // Here you would typically send the data to your API
-    // For now, just log the values to verify everything is working correctly
-
-    // Close the dialog after submission
-    setOpen(false);
-
-    // Reset the form for next use
-    form.reset({
-      type,
-      date: new Date(),
-      category: "",
-      description: "",
-      amount: undefined,
+    toast.loading("Creating transaction...", {
+      id: "create-transaction",
     });
+    mutate(values);
   };
 
   return (
@@ -119,7 +143,9 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                       type="number"
                       step="0.01"
                       value={field.value || ""}
-                      onChange={field.onChange}
+                      onChange={(e) =>
+                        field.onChange(parseFloat(e.target.value))
+                      }
                     />
                   </FormControl>
                   <FormDescription>
@@ -189,9 +215,20 @@ function CreateTransactionDialog({ trigger, type }: Props) {
             </div>
             <DialogFooter className="mt-4">
               <DialogClose asChild>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline" type="button">
+                  Cancel
+                </Button>
               </DialogClose>
-              <Button type="submit">Save transaction</Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? (
+                  <>
+                    <span className="mr-2">Saving...</span>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  </>
+                ) : (
+                  "Save transaction"
+                )}
+              </Button>
             </DialogFooter>
           </form>
         </Form>
@@ -201,3 +238,29 @@ function CreateTransactionDialog({ trigger, type }: Props) {
 }
 
 export default CreateTransactionDialog;
+
+async function createTransaction(
+  variables: CreateTransactionSchemaType
+): Promise<Transaction> {
+  try {
+    const response = await fetch("/api/transactions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(variables),
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      console.error("API Error:", responseData);
+      throw new Error(responseData.error || "Failed to create transaction");
+    }
+
+    return responseData;
+  } catch (error) {
+    console.error("Create transaction error:", error);
+    throw error;
+  }
+}
