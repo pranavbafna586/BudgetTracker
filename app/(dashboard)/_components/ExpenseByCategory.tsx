@@ -204,8 +204,8 @@ export function ExpenseByCategory({
                 data={chartData}
                 dataKey="amount"
                 nameKey="category"
-                innerRadius={55}
-                outerRadius={75}
+                innerRadius={65}
+                outerRadius={95}
                 paddingAngle={5}
                 strokeWidth={2}
                 stroke="#ffffff"
