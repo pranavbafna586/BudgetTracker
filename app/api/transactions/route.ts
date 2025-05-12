@@ -6,34 +6,41 @@ import { CreateTransactionSchema } from "@/schema/transaction";
 import { revalidatePath } from "next/cache";
 
 export async function GET(request: Request) {
-  const user = await currentUser();
-  if (!user) {
-    redirect("/sign-in");
-  }
+  try {
+    const user = await currentUser();
+    if (!user) {
+      redirect("/sign-in");
+    }
 
-  const { searchParams } = new URL(request.url);
-  const paramType = searchParams.get("type");
-  const validator = z.enum(["expense", "income"]).optional();
-  const querParams = validator.safeParse(paramType);
+    const { searchParams } = new URL(request.url);
+    const paramType = searchParams.get("type");
 
-  if (!querParams.success) {
-    return Response.json(querParams.error, {
-      status: 400,
+    // Only validate if type parameter exists
+    let type = undefined;
+    if (paramType) {
+      if (paramType === "expense" || paramType === "income") {
+        type = paramType;
+      }
+    }
+
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        userId: user.id,
+        ...(type && { type }),
+      },
+      orderBy: {
+        date: "desc",
+      },
     });
+
+    return Response.json(transactions);
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    return Response.json(
+      { error: "Error fetching transactions" },
+      { status: 500 }
+    );
   }
-
-  const type = querParams.data;
-  const transactions = await prisma.transaction.findMany({
-    where: {
-      userId: user.id,
-      ...(type && { type }),
-    },
-    orderBy: {
-      date: "desc",
-    },
-  });
-
-  return Response.json(transactions);
 }
 
 export async function POST(request: Request) {

@@ -4,30 +4,47 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 export async function GET(request: Request) {
-  const user = await currentUser();
-  if (!user) {
-    redirect("/sign-in");
-  }
-  const { searchParams } = new URL(request.url);
-  const paramType = searchParams.get("type");
-  const validator = z.enum(["expense", "income"]);
-  const querParams = validator.safeParse(paramType);
-  if (!querParams.success) {
-    return Response.json(querParams.error, {
-      status: 400,
+  try {
+    const user = await currentUser();
+    if (!user) {
+      redirect("/sign-in");
+    }
+
+    const { searchParams } = new URL(request.url);
+    const paramType = searchParams.get("type");
+
+    // Simplify validation - check directly without zod
+    let type = undefined;
+    if (paramType === "expense" || paramType === "income") {
+      type = paramType;
+    }
+
+    console.log(
+      "Fetching categories for user",
+      user.id,
+      "with type",
+      type || "all"
+    );
+
+    const categories = await prisma.category.findMany({
+      where: {
+        userId: user.id,
+        ...(type && { type }),
+      },
+      orderBy: {
+        name: "asc",
+      },
     });
+
+    console.log("Found", categories.length, "categories");
+    return Response.json(categories);
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return Response.json(
+      { error: "Failed to fetch categories" },
+      { status: 500 }
+    );
   }
-  const type = querParams.data;
-  const categories = await prisma.category.findMany({
-    where: {
-      userId: user.id,
-      ...(type && { type }),
-    },
-    orderBy: {
-      name: "asc",
-    },
-  });
-  return Response.json(categories);
 }
 
 export async function POST(request: Request) {
