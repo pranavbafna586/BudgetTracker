@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Budget Tracker App
+
+A modern, responsive personal finance tracking application built with Next.js, React, TypeScript, and Prisma. This full-stack application helps users track their income and expenses, visualize spending patterns, and manage their financial goals with an intuitive dashboard interface.
+
+![Dashboard Screenshot](public/image.png)
+
+## Features
+
+- **User Authentication**: Secure user authentication system using Clerk
+- **Dashboard Overview**: Visual summary of financial status with key metrics
+- **Transaction Management**: Track all income and expenses with detailed categorization
+- **Category Management**: Create and manage custom categories for income and expenses
+- **Data Visualization**: Interactive charts and graphs showing spending trends and patterns
+- **Financial History**: Track financial performance over time with historical data
+- **Income/Expense Filtering**: Filter transactions by type, category, date range, and more
+- **Dark Mode**: Elegant dark-themed UI for comfortable viewing
+- **Responsive Design**: Fully responsive interface that works on desktop, tablet, and mobile
+- **Currency Support**: Multiple currency format support
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React, TypeScript, Tailwind CSS
+- **UI Components**: shadcn/ui, Lucide React icons
+- **Authentication**: Clerk
+- **Database**: SQLite (development), Prisma ORM
+- **State Management**: React hooks and context
+- **Data Visualization**: Chart.js
+
+## Screenshots
+
+### Transaction History
+
+![Transactions Page](public/transaction.png)
+
+### Category Management
+
+![Category Management](public/category.png)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18.0 or higher
+- npm or yarn package manager
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/your-username/budget-tracker.git
+cd budget-tracker
+```
+
+### Install Dependencies
+
+```bash
+npm install
+# or
+yarn install
+```
+
+### Set up Environment Variables
+
+Create a `.env.local` file in the root directory with the following variables:
+
+```
+# Clerk Auth
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
+
+# NextJS
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+### Set up Database
+
+```bash
+npx prisma migrate dev
+```
+
+### Run the Development Server
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `/app` - Next.js App Router components and pages
+  - `/(auth)` - Authentication pages
+  - `/(dashboard)` - Dashboard pages and components
+  - `/api` - API routes
+  - `/wizard` - Onboarding wizard
+- `/components` - Reusable UI components
+  - `/ui` - shadcn/ui components
+- `/lib` - Utility functions and shared code
+- `/prisma` - Prisma schema and migrations
+- `/public` - Static files
 
-## Learn More
+## Usage
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Register for a new account
+2. Complete the onboarding wizard to set up your preferences
+3. Add your income and expense transactions
+4. View your financial summary and reports on the dashboard
+5. Manage categories and track your spending over time

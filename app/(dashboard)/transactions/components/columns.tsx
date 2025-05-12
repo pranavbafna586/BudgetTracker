@@ -86,19 +86,19 @@ export const columns: ColumnDef<Transaction>[] = [
           Wallet: Wallet,
           ArrowUpRight: ArrowUpRight,
           ArrowDownLeft: ArrowDownLeft,
-        };        const IconComponent = iconMap[categoryIcon];
+        };
+
+        const IconComponent = iconMap[categoryIcon];
         if (IconComponent) {
           return (
             <div
-              className={`flex items-center justify-center w-10 h-10 rounded-full mr-3 ${
-                type === "income" 
-                  ? "bg-gradient-to-br from-emerald-800 to-emerald-950 border border-emerald-700" 
-                  : "bg-gradient-to-br from-rose-800 to-rose-950 border border-rose-700"
+              className={`flex items-center justify-center w-8 h-8 rounded-full mr-3 ${
+                type === "income" ? "bg-emerald-900/60" : "bg-rose-900/60"
               }`}
             >
               <IconComponent
-                className={`h-5 w-5 ${
-                  type === "income" ? "text-emerald-200" : "text-rose-200"
+                className={`h-4 w-4 ${
+                  type === "income" ? "text-emerald-300" : "text-rose-300"
                 }`}
               />
             </div>
@@ -106,18 +106,16 @@ export const columns: ColumnDef<Transaction>[] = [
         }
         return (
           <div
-            className={`flex items-center justify-center w-10 h-10 rounded-full mr-3 ${
-              type === "income" 
-                ? "bg-gradient-to-br from-emerald-800 to-emerald-950 border border-emerald-700" 
-                : "bg-gradient-to-br from-rose-800 to-rose-950 border border-rose-700"
+            className={`flex items-center justify-center w-8 h-8 rounded-full mr-3 ${
+              type === "income" ? "bg-emerald-900/60" : "bg-rose-900/60"
             }`}
           >
             <span
               className={`${
-                type === "income" ? "text-emerald-200" : "text-rose-200"
-              } text-lg font-bold`}
+                type === "income" ? "text-emerald-300" : "text-rose-300"
+              } font-medium`}
             >
-              {categoryIcon.charAt(0).toUpperCase()}
+              {categoryIcon.charAt(0)}
             </span>
           </div>
         );
@@ -214,7 +212,8 @@ export const columns: ColumnDef<Transaction>[] = [
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
-  },  {
+  },
+  {
     accessorKey: "amount",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Amount" />
@@ -227,19 +226,20 @@ export const columns: ColumnDef<Transaction>[] = [
       return (
         <div
           className={`font-semibold flex items-center ${
-            type === "income" ? "text-emerald-300" : "text-rose-300"
+            type === "income" ? "text-emerald-600" : "text-rose-600"
           }`}
         >
+          {" "}
           {type === "income" ? (
             <span className="inline-flex items-center">
-              <span className="text-xs mr-2 bg-emerald-900 text-emerald-200 rounded px-2 py-0.5 font-medium">
+              <span className="text-xs mr-1 bg-emerald-900/60 text-emerald-300 rounded-sm px-1 font-normal">
                 +
               </span>
               {formatCurrency(amount)}
             </span>
           ) : (
             <span className="inline-flex items-center">
-              <span className="text-xs mr-2 bg-rose-900 text-rose-200 rounded px-2 py-0.5 font-medium">
+              <span className="text-xs mr-1 bg-rose-900/60 text-rose-300 rounded-sm px-1 font-normal">
                 -
               </span>
               {formatCurrency(amount)}
