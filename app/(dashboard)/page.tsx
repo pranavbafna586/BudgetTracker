@@ -25,7 +25,6 @@ import {
 import { IncomeByCategory } from "./_components/IncomeByCategory";
 import { ExpenseByCategory } from "./_components/ExpenseByCategory";
 import { FinancialHistory } from "./_components/FinancialHistory";
-import RecentTransactions from "./_components/RecentTransactions";
 
 async function page() {
   const user = await currentUser();
@@ -68,33 +67,33 @@ async function page() {
     <div className="h-full bg-background">
       <div className="border-b bg-card shadow-sm">
         {" "}
-        <div className="container flex flex-wrap items-center justify-between gap-4 py-6">
+        <div className="container flex flex-wrap items-center justify-between gap-4 py-6 px-4 md:px-6">
           <p className="text-3xl font-bold tracking-tight">
-            Hello, {user.firstName}! 👋🏻
+        Hello, {user.firstName}! 👋🏻
           </p>
           <div className="flex items-center gap-3">
-            <CreateTransactionDialog
-              trigger={
-                <Button
-                  variant={"outline"}
-                  className="!border-emerald-500 !bg-emerald-950 !text-white hover:!bg-emerald-700 hover:!text-white text-base font-medium px-5 py-5"
-                >
-                  New Income 🤑
-                </Button>
-              }
-              type="income"
-            />
-            <CreateTransactionDialog
-              trigger={
-                <Button
-                  variant={"outline"}
-                  className="!border-rose-500 !bg-rose-950 !text-white hover:!bg-rose-700 hover:!text-white text-base font-medium px-5 py-5"
-                >
-                  New Expense 😤
-                </Button>
-              }
-              type="expense"
-            />
+        <CreateTransactionDialog
+          trigger={
+            <Button
+          variant={"outline"}
+          className="!border-emerald-500 !bg-emerald-950 !text-white hover:!bg-emerald-700 hover:!text-white text-base font-medium px-5 py-5"
+            >
+          New Income 🤑
+            </Button>
+          }
+          type="income"
+        />
+        <CreateTransactionDialog
+          trigger={
+            <Button
+          variant={"outline"}
+          className="!border-rose-500 !bg-rose-950 !text-white hover:!bg-rose-700 hover:!text-white text-base font-medium px-5 py-5"
+            >
+          New Expense 😤
+            </Button>
+          }
+          type="expense"
+        />
           </div>
         </div>
       </div>

@@ -6,7 +6,7 @@ import {
 } from "@/schema/categories";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleOff, Loader2, PlusSquare } from "lucide-react";
-import React, { useState, useCallback, use } from "react";
+import React, { useState, useCallback, use, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -46,10 +46,27 @@ import { useTheme } from "next-themes";
 interface Props {
   type: TransactionType;
   successCallback?: (category: Category) => void;
+  // Optional props for external control
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  trigger?: React.ReactNode;
 }
 
-function CreateCategoryDialog({ type, successCallback }: Props) {
-  const [open, setOpen] = useState(false);
+function CreateCategoryDialog({
+  type,
+  successCallback,
+  open: controlledOpen,
+  onOpenChange: setControlledOpen,
+  trigger,
+}: Props) {
+  const [internalOpen, setInternalOpen] = useState(false);
+
+  // Determine if we're in controlled or uncontrolled mode
+  const isControlled =
+    controlledOpen !== undefined && setControlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
+  const setOpen = isControlled ? setControlledOpen : setInternalOpen;
+
   const form = useForm<CreateCategorySchemaType>({
     resolver: zodResolver(CreateCategorySchema),
     defaultValues: {
@@ -100,50 +117,68 @@ function CreateCategoryDialog({ type, successCallback }: Props) {
     [mutate]
   );
 
+  // Reset form when type changes
+  useEffect(() => {
+    form.reset({
+      name: "",
+      icon: "",
+      type,
+    });
+  }, [type, form]);
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex border-separate items-center justify-start rounded-none border-b px-3 py-3 text-muted-foreground"
-        >
-          <PlusSquare className="mr-2 h-4 w-4" /> Create new
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
-        {" "}
-        <DialogHeader>
-          <DialogTitle>
+      {trigger ? (
+        <DialogTrigger asChild>{trigger}</DialogTrigger>
+      ) : (
+        <DialogTrigger asChild>
+          <Button
+            variant="ghost"
+            className="flex border-separate items-center justify-start rounded-none border-b px-3 py-3 text-muted-foreground"
+          >
+            <PlusSquare className="mr-2 h-4 w-4" /> Create new
+          </Button>
+        </DialogTrigger>
+      )}
+      <DialogContent className="sm:max-w-md md:max-w-lg w-[95vw] mx-auto">
+        <DialogHeader className="text-center">
+          <DialogTitle className="text-xl sm:text-2xl">
             Create{" "}
             <span
               className={
-                type === "income" ? "text-emerald-500" : "text-red-500"
+                type === "income"
+                  ? "text-emerald-500 font-medium"
+                  : "text-red-500 font-medium"
               }
             >
               {type}
             </span>{" "}
             category
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="max-w-xs mx-auto">
             Categories are used to group your transactions
           </DialogDescription>
-        </DialogHeader>{" "}
+        </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6 py-4"
+          >
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>{" "}
+                <FormItem className="px-1">
+                  <FormLabel className="text-base">Name</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Category name"
                       value={field.value || ""}
                       onChange={field.onChange}
+                      className="h-11"
                     />
                   </FormControl>
-                  <FormDescription>
+                  <FormDescription className="text-sm">
                     Transaction description (optional)
                   </FormDescription>
                 </FormItem>
@@ -153,14 +188,14 @@ function CreateCategoryDialog({ type, successCallback }: Props) {
               control={form.control}
               name="icon"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Icon</FormLabel>{" "}
+                <FormItem className="px-1">
+                  <FormLabel className="text-base">Icon</FormLabel>
                   <FormControl>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant={"outline"}
-                          className="h-[100px] w-full"
+                          className="h-[100px] w-full rounded-lg border-dashed hover:bg-muted/50 transition-all"
                         >
                           {field.value ? (
                             <div className="flex flex-col items-center gap-2">
@@ -173,7 +208,7 @@ function CreateCategoryDialog({ type, successCallback }: Props) {
                             </div>
                           ) : (
                             <div className="flex flex-col items-center gap-2">
-                              <CircleOff className="h-[48px] w-[48px]" />
+                              <CircleOff className="h-[48px] w-[48px] text-muted-foreground" />
                               <p className="text-xs text-muted-foreground">
                                 Click to select
                               </p>
@@ -181,7 +216,7 @@ function CreateCategoryDialog({ type, successCallback }: Props) {
                           )}
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-full">
+                      <PopoverContent className="w-full max-w-[95vw] md:max-w-md mx-auto">
                         <Picker
                           data={data}
                           theme={theme.resolvedTheme}
@@ -192,15 +227,15 @@ function CreateCategoryDialog({ type, successCallback }: Props) {
                       </PopoverContent>
                     </Popover>
                   </FormControl>
-                  <FormDescription>
-                    This is how your category will appear in the app{" "}
+                  <FormDescription className="text-sm text-center">
+                    This is how your category will appear in the app
                   </FormDescription>
                 </FormItem>
               )}
             />
           </form>
         </Form>
-        <DialogFooter>
+        <DialogFooter className="flex-col sm:flex-row gap-2 sm:gap-0 pt-2">
           <DialogClose asChild>
             <Button
               type="button"
@@ -208,11 +243,16 @@ function CreateCategoryDialog({ type, successCallback }: Props) {
               onClick={() => {
                 form.reset();
               }}
+              className="w-full sm:w-auto"
             >
               Cancel
             </Button>
-          </DialogClose>{" "}
-          <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
+          </DialogClose>
+          <Button
+            onClick={form.handleSubmit(onSubmit)}
+            disabled={isPending}
+            className="w-full sm:w-auto"
+          >
             {isPending ? (
               <>
                 <span className="mr-2">Creating...</span>

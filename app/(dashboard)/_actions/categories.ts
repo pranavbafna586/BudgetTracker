@@ -29,3 +29,26 @@ export async function CreateCategory(form: CreateCategorySchemaType) {
     },
   });
 }
+
+export async function DeleteCategory(name: string, type: string) {
+  const user = await currentUser();
+  if (!user) {
+    redirect("/sign-in");
+  }
+
+  try {
+    const deletedCategory = await prisma.category.delete({
+      where: {
+        name_userId_type: {
+          name,
+          userId: user.id,
+          type,
+        },
+      },
+    });
+    return { success: true, category: deletedCategory };
+  } catch (error) {
+    console.error("Failed to delete category:", error);
+    return { success: false, error: "Failed to delete category" };
+  }
+}
